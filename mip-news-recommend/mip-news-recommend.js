@@ -6,6 +6,7 @@
 
 define(function (require) {
     var $ = require('zepto');
+    var util = require('util');
     var viewer = require('viewer');
     var RecommendElement = require('customElement').create();
     var recommend;
@@ -33,15 +34,13 @@ define(function (require) {
 
     function getOriginUrl() {
         var url = location.href;
-
-        if (/mipcache\./g.test(url)) {
-            url = url.replace(/^http(s?)\:\/\/mipcache.bdstatic.com\/c\/(s?)/g, function ($0, $1, $2) {
-                return $2 === 's' ? 'https://' : 'http://';
-            });
-            url = url.replace(/\#.*$/g, '');
-        }
-
+        url = util.parseCacheUrl(url);
+        url = url.replace(/\#.*$/g, '');
         return url;
+    }
+
+    function getCdnUrl(url) {
+        return '//mib.bdstatic.com/doc/detail/' + encodeURIComponent(url) + '/0/#from=sub';
     }
 
     function formatTime(time) {
@@ -106,29 +105,28 @@ define(function (require) {
         delegate: function () {
             var isIframe = this.isIframe;
 
-            this.$container.on('click', '.mip-news-recommend-href', function (e) {
-                if (isIframe) {
+            if (isIframe) {
+                this.$container.on('click', '.mip-news-recommend-href', function (e) {
                     e.preventDefault();
 
                     var $ele = $(this);
                     viewer.sendMessage('loadiframe', {
-                        'url': $ele.attr('href'),
+                        'url': $ele.data('url'),
                         'title': $ele.find('.mip-news-recommend-provider').text(),
                         'click': $ele.data('click')
                     });
-                }
-            });
+                });
 
-            this.$container.on('click', '.mip-news-recommend-hot-href', function (e) {
-                if (isIframe) {
+                this.$container.on('click', '.mip-news-recommend-hot-href', function (e) {
                     e.preventDefault();
+
                     var $ele = $(this);
                     viewer.sendMessage('urljump', {
-                        'url': $ele.attr('href'),
+                        'url': $ele.data('url'),
                         'click': $ele.data('click')
                     });
-                }
-            });
+                });
+            }
         },
 
         handleData: function (item, i, action) {
@@ -143,15 +141,18 @@ define(function (require) {
 
         display: function (data) {
             var self = this;
+            var isIframe = this.isIframe;
             var htmlNews = '';
             var htmlHots = '';
 
             $.each(data.recommend, function (i, item) {
                 var dataClick = self.handleData(item, i, 'recommend');
+                var href = isIframe ? 'javascript:void(0);' : getCdnUrl(item.url);
 
                 htmlNews += [
                     '<div class="mip-news-recommend-item">',
-                        '<a class="mip-news-recommend-href" href="' + item.url + '" data-click=\'' + dataClick + '\'>',
+                        '<a class="mip-news-recommend-href" href="' + href + '" data-url="' + item.url
+                                + '" data-click=\'' + dataClick + '\'>',
                             '<div class="mip-news-recommend-title">' + item.title + '</div>',
                             '<div class="mip-news-recommend-info">',
                                 '<span>' + formatTime(item.time) + '</span>',
@@ -164,6 +165,7 @@ define(function (require) {
 
             $.each(data.hot_card, function (i, item) {
                 var dataClick = self.handleData(item, i, 'hotpoint');
+                var href = isIframe ? 'javascript:void(0);' : item.url;
 
                 if (i % 2 === 0) {
                     htmlHots += '<div class="mip-news-recommend-row">';
@@ -171,7 +173,8 @@ define(function (require) {
 
                 htmlHots += [
                     '<div class="mip-news-recommend-hot-item">',
-                        '<a class="mip-news-recommend-hot-href" href="' + item.url + '" data-click=\'' + dataClick + '\'>',
+                        '<a class="mip-news-recommend-hot-href" href="' + href + '" data-url="' + item.url
+                                + '" data-click=\'' + dataClick + '\'>',
                             item.query,
                         '</a>',
                     '</div>'

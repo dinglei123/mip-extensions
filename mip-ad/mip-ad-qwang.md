@@ -1,11 +1,13 @@
-# 类型: ad-qwang 全网推荐
+# mip-ad:ad-qwang 百度搜索推广合作
 
-全网推荐
+mip-ad 的一种类型：百度搜索推广合作。  
+产品介绍：http://union.baidu.com/product/prod-search.html
 
-## 支持布局
-
-- fixed-height
-- fixed 
+标题|内容
+----|----
+类型|通用
+支持布局|fixed-height, fixed
+所需脚本|https://mipcache.bdstatic.com/static/v1/mip-ad/mip-ad.js
 
 ## 示例
 
@@ -20,7 +22,7 @@
 </mip-ad>
 ```
 
-### fixed 布局
+### 组件 layout="fixed" 布局
 
 ```html
 <mip-ad 

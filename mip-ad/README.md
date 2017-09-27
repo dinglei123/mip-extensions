@@ -1,61 +1,43 @@
 # mip-ad 广告
 
-mip-ad 用来支持站长添加网页内自定义广告，主要包括连接、图文，多图，banner四种形式，这类广告可以制定大小也可以被用户关闭。
+mip-ad 用于在MIP页中引入广告脚本，投放广告。 
 
 标题|内容
 ----|----
 类型|通用
-支持布局|responsive
+支持布局|多种 [文档](https://www.mipengine.org/doc/3-widget/11-widget-layout.html)
 所需脚本|https://mipcache.bdstatic.com/static/v1/mip-ad/mip-ad.js
-版本v1.0|支持别名mip-embed
 
-## 示例
+## 广告类型选择
 
-### 基本使用
+mip-ad 具有多种类型（type），type 取值由广告分类和投放配置页地址决定。
 
-```html
-<mip-ad layout="fixed"  type="ad-baidu" cproid="u2791376" class="mip-element mip-layout-container"></mip-ad>
-```
+### 1. 通用广告-图文链接形式
+直接使用[通用广告 ad-comm](//www.mipengine.org/examples/mip-ad/mip-ad-comm.html)即可。
 
-### 图加广告
+### 2. 百度联盟 
 
-```html
-<mip-ad 
-    type="ad-imageplus"
-    unionId="u2816363"
-    >
-    <mip-img src="http://placeholder.qiniudn.com/100x100"></mip-img>
-</mip-ad>
-```
+投放官网：[http://union.baidu.com](http://union.baidu.com)  
 
-### 网盟扩展广告
+广告产品页面|对应 MIP 组件
+----|----
+[搜索推广合作](http://union.baidu.com/product/prod-search.html) | [type="ad-qwang"](//www.mipengine.org/examples/mip-ad/mip-ad-qwang.html)
+[网盟推广合作](http://union.baidu.com/product/prod-cpro.html) | [type="ad-baidu"](//www.mipengine.org/examples/mip-ad/mip-ad-baidu.html)
+[百度联盟广告反屏蔽](http://yingxiao.baidu.com/zhichi/knowledge/detail.action?channelId=4&classId=13484&knowledgeId=15198) | [type="ad-baidu-ext"](//www.mipengine.org/examples/mip-ad/mip-baidu-wm-ext.html)
 
-```html
-<mip-ad 
-    type="baidu-wm-ext" 
-    domain="//dup.lovedword.com/" 
-    token="3a1ec097f7cbf63edb0e7f98eff238f950e6ca0b29e67fe1103c" 
->
-	<div id="3a1ec097f7cbf63edb0e7f98eff238f950e6ca0b29e67fe1103c"></div>
-</mip-ad>
-```
+### 3. 百度 SSP 媒体服务
 
-### 通用广告banner样式基本使用
+投放官网：[http://ssp.baidu.com](http://ssp.baidu.com)
 
-```html
-<mip-ad 
-    type="ad-comm"
-    tpl="onlyImg" 
-    href="//m.baidu.com/s?word=百度" 
-    data-size="1242 180" 
-    src="//m.baidu.com/static/search/ala/ad_1.png">
-</mip-ad>
-```
+广告产品页面|对应 MIP 组件
+----|----
+[直投广告](http://yingxiao.baidu.com/zhichi/knowledge/detail.action?channelId=24&classId=14547&knowledgeId=14745) | [type="ad-baiduaap"](//www.mipengine.org/examples/mip-ad/mip-ad-baidussp.html)
+[Feeds联盟广告](https://ssp.baidu.com/)| [type="ad-ssp"](//www.mipengine.org/examples/mip-ad/mip-ad-ssp.html)
+余下投放方式 | [type="ad-baidu"](//www.mipengine.org/examples/mip-ad/mip-ad-baidu.html)
 
-## 支持广告
+### 4. 百度图+ 
+投放官网：[http://imageplus.baidu.com/](http://imageplus.baidu.com/)
 
-- [通用广告](mip-ad-comm.md)
-- [全网广告](mip-ad-qwang.md)
-- [网盟广告](mip-ad-baidu.md)
-- [图加广告](mip-ad-imageplus.md)
-- [网盟扩展广告](mip-baidu-wm-ext.md)
+广告产品页面|对应 MIP 组件
+----|----
+[百度图+广告](http://imageplus.baidu.com/) | [type="ad-imageplus"](//www.mipengine.org/examples/mip-ad/mip-ad-imageplus.html)

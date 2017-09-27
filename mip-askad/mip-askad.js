@@ -5,6 +5,7 @@
  */
 define(function (require) {
     var $ = require('jquery');
+    var util = require('util');
     var customElement = require('customElement').create();
 
     var newYWBD;
@@ -28,12 +29,20 @@ define(function (require) {
         arg['otherparamkey'] = _element.getAttribute("otherparamkey") || "0";
         arg['otherparamvalue'] = _element.getAttribute("otherparamvalue") || "";
         arg['callbackconfig'] = _element.getAttribute("cboptions") || [] ;
+        arg['callbacknboptions'] = _element.getAttribute("nboptions") || [] ;
 
         //回调配置序列化
         var callbackdata = [];
         if (arg['callbackconfig']) {
             try {
                 callbackdata = new Function('return ' + arg['callbackconfig'])()
+            } catch (e) {}
+        }
+        //回调配置序列化
+        var callbacknb = [];
+        if (arg['callbacknboptions']) {
+            try {
+                callbacknb = new Function('return ' + arg['callbacknboptions'])()
             } catch (e) {}
         }
 
@@ -47,7 +56,7 @@ define(function (require) {
             var content = $title.html() +" "+ $dse.html().slice(0,30);
         }
         innerJs(content,function(){
-            getadDate(type, arg, callbackdata, _this);
+            getadDate(type, arg, callbackdata, _this, callbacknb);
 
         })
     }
@@ -63,7 +72,8 @@ define(function (require) {
         }else {
             mipLoadingJs  = true;
             var timestamp = ( new Date()).valueOf();
-            var allurl = ["//ip.120ask.com/lt?js=m.120ask.com&r="+timestamp,"//scws.120ask.com/scws?t=js&content="+content+"&r="+timestamp,"//m.120ask.com/pub/js/x_m_none_jquery.js?r="+timestamp];
+            var CLASSID = $("#top_ad").attr("cid");
+            var allurl = ["//ip.120ask.com/lt?js=m.120ask.com&r="+timestamp+"&cid="+CLASSID,"//scws.120ask.com/scws?t=js&content="+content+"&r="+timestamp,"//m.120ask.com/pub/js/x_m_none_jquery.js?r="+timestamp];
             var calbacklen = 3;
 
             for(var i = 0; i< allurl.length; i++) {
@@ -104,11 +114,11 @@ define(function (require) {
     /**
      * 执行ask网站js获取广告数据
      */
-    function getadDate(type, arg, callbackdata, layout) {
+    function getadDate(type, arg, callbackdata, layout, callbacknb) {
         //重写YWBD原型方法以实现标签替换
         YWBD.prototype.YWBD_WRITE =  function(backdata,OBJ,EXCEPTION,NONE) {
             var code = backdata.code;
-            if(location.href.indexOf('mipcache.bdstatic.com') >= 0 ) { //如果是mip页
+            if(util.fn.isCacheUrl(location.href)) { //如果是mip页
                 code = code.replace(/http:\/\/cdn.120askimages.com/g,"/i/cdn.120askimages.com") //替换img为src代理路径
             }
             OBJ.append(code);
@@ -116,6 +126,11 @@ define(function (require) {
                 renderCallback(EXCEPTION)
             }
         }
+        YWBD.prototype.YWBD_NONE = function(NONE) {
+            if (NONE&&NONE.length != 0){
+                renderCallback(NONE);
+            }
+        },
 
         //以下为广告投放原始代码
         newYWBD = new YWBD();
@@ -133,7 +148,7 @@ define(function (require) {
 
         newYWBD.YWBD_SET_AREA_PARAMS();
         newYWBD.YWBD_SET_LOG();
-        newYWBD.YWBD_AD_AJAX($(layout),callbackdata);
+        newYWBD.YWBD_AD_AJAX($(layout),callbackdata,callbacknb);
     }
 
 

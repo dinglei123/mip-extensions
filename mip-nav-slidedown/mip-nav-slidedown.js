@@ -22,8 +22,9 @@ define(function (require) {
     function render(me) {
         var $this = $(me);
         var id = $this.data('id');
-        var showBrand = $this.data('showbrand') !== '0';
-        var brandHref = $this.data('brandhref') || '/';
+        var showBrand = !($this.data('showbrand') === 0);
+        var brandName = $this.data('brandname') || '';
+        var brandHref = $this.data('brandhref') || '#';
         var $ulNav = $this.find('#' + id);
         var $container = $('<div></div>');
         var $btnWrap = '<div class="navbar-header">'
@@ -34,7 +35,7 @@ define(function (require) {
             + '<span class="icon-bar"></span>'
             + '<span class="icon-bar"></span>'
             + '</button>'
-            + (showBrand ? '<a href=' + brandHref + ' class="navbar-brand"></a>' : '')
+            + (showBrand ? '<a href=' + brandHref + ' class="navbar-brand">' + brandName + '</a>' : '')
             + '</div>';
         $container.append($btnWrap).append($ulNav).appendTo($this);
         $('.mip-nav-wrapper').addClass('show');
@@ -51,9 +52,6 @@ define(function (require) {
 
         $(document).on('click', '.navbar-header .navbar-toggle', navClickHandler);
 
-        $('#bs-navbar .navbar-nav li').on('click', function () {
-            $('.navbar-header .navbar-toggle').trigger('click');
-        });
         // 主菜单关闭按钮 touchstart touchend mousedown mouseup变色
         addHoverClass($('#navbar-wise-close-btn'));
         $('#navbar-wise-close-btn').on('touchend', function (e) {
@@ -64,7 +62,6 @@ define(function (require) {
             $('.navbar-header .navbar-toggle').trigger('click');
         });
     }
-
 
     /**
      * 展开关闭菜单效果
@@ -90,6 +87,7 @@ define(function (require) {
             }, 500);
         }
         else {
+            // 打开菜单
             var closeBtnTop = 20;
             $wiseNav = $('#bs-navbar');
 
@@ -116,8 +114,12 @@ define(function (require) {
             }
 
             if (mode === 'resize' && $wiseNav.hasClass('in') || mode === 'open') {
-                $wiseNav.height(window.innerHeight - $('.navbar-header').height());
-                closeBtnTop = window.innerHeight - 50 - ($('.navbar-right .index-body').height() + 20) * 4 - 90;
+                var listNum = $('#bs-navbar li').length;
+                var offsetTop = $('mip-nav-slidedown')[0] ? $('mip-nav-slidedown')[0].getBoundingClientRect().top : 0;
+                var navHeight = window.innerHeight - $('.navbar-header').height() - offsetTop;
+                $wiseNav.height(navHeight);
+                // 关闭按钮距离底部固定为90px
+                closeBtnTop = navHeight - ($('.navbar-right li').height()) * listNum - 90;
                 if (closeBtnTop > 20) {
                     $('.navbar-wise-close').css('margin-top', closeBtnTop + 'px');
                 }

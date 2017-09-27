@@ -1,6 +1,6 @@
-# mip-lightbox
+# mip-lightbox 弹出层
 
-mip-lightbox 是由用户控制展现或关闭的一个全屏浮层组件，组件全屏覆盖，组件里的元素超出屏幕会被隐藏，不能滑动。
+由用户控制展现或关闭的全屏浮层组件，组件全屏覆盖，组件里的元素超出屏幕会被隐藏，不能滑动。
 
 标题|内容
 ----|----
@@ -9,6 +9,8 @@ mip-lightbox 是由用户控制展现或关闭的一个全屏浮层组件，组�
 所需脚本|https://mipcache.bdstatic.com/static/v1/mip-lightbox/mip-lightbox.js
 
 ## 示例
+
+### 基本使用
 
 ```html
 <button on="tap:my-lightbox.toggle" id="btn-open" role="button" tabindex="0">
@@ -22,6 +24,27 @@ mip-lightbox 是由用户控制展现或关闭的一个全屏浮层组件，组�
     <div class="lightbox">
         <h1>Hello, World!</h1>
         <p> this is the lightbox</p>
+    </div>
+</mip-lightbox>
+```
+### 自动关闭
+
+[notice] 此属性与 class 为 `mip-lightbox-seconds` 的标签配套使用
+
+```html
+<button on="tap:my-lightbox.toggle" id="btn-open" role="button" tabindex="0">
+    Open lightbox
+</button>
+
+<mip-lightbox
+    autoclosetime="5"
+    id="my-lightbox"
+    layout="nodisplay"
+    class="mip-hidden">
+    <div class="lightbox">
+        <h1>Hello, World!</h1>
+        <p> this is the lightbox</p>
+        <div class="mip-lightbox-countdown">倒计时<span class="mip-lightbox-seconds"></span>秒关闭</div>
     </div>
 </mip-lightbox>
 ```
@@ -40,6 +63,15 @@ mip-lightbox 是由用户控制展现或关闭的一个全屏浮层组件，组�
 必选项：是    
 类型：字符串    
 取值：nodisplay 
+
+### autoclose
+
+说明：自定义倒计时，自动关闭，需要与`class="mip-lightbox-seconds"`的标签配套使用,
+      `class="mip-lightbox-countdown"`的标签可自定义倒计时样式及文字内容
+必选项：否    
+类型：字符串    
+取值：数字，单位秒
+
 
 ## 注意事项
 
